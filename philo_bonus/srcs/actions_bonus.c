@@ -6,7 +6,7 @@
 /*   By: jcourtoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/05 13:57:09 by jcourtoi          #+#    #+#             */
-/*   Updated: 2022/08/10 18:27:22 by jcourtoi         ###   ########.fr       */
+/*   Updated: 2022/08/10 18:51:43 by jcourtoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,15 +16,15 @@ void	eating(t_philo *philo)
 {
 	philo->last_meal = get_timestamp(philo->data);
 	fork_func(philo, 1);
-	sem_wait(philo->eat);
+	sem_wait((*philo).eat);
 	print_func(philo->data, philo->n, EAT);
-	sem_post(philo->eat);
+	sem_post((*philo).eat);
 	usleep(philo->data->to_eat * 1000);
 	philo->ate++;
-//	sem_wait(philo->eat);
+	sem_wait((*philo).eat);
 	if (philo->ate == philo->data->must_eat && !philo->finish)
 		philo->finish = 1;
-//	sem_post(philo->eat);
+	sem_post((*philo).eat);
 	fork_func(philo, 0);
 }
 
@@ -53,7 +53,8 @@ void	process(t_data *data, t_philo *philo, int j)
 		printf("Pthread create error (philo %d)\n", j);
 		exit(1);
 	}
-	pthread_join(philo[j].th, NULL);		
+	pthread_join(philo[j].th, NULL);
+	pthread_detach(philo[j].th);
 }
 
 void	one_philo(t_data *data, t_philo *philo)

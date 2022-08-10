@@ -6,7 +6,7 @@
 /*   By: jcourtoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/05 13:59:10 by jcourtoi          #+#    #+#             */
-/*   Updated: 2022/08/10 18:33:14 by jcourtoi         ###   ########.fr       */
+/*   Updated: 2022/08/10 18:53:21 by jcourtoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,29 +24,10 @@ static	int	philosopher(t_data *data, t_philo *philo)
 	return (0);
 }
 
-static int	philosophers(t_data *data, t_philo *philo)
+static void	wait_kill(t_data *data, int status)
 {
 	int	j;
-	int	status;
-//(void)philo;
-	j = -1;
-	gettimeofday(&data->start, NULL);
-	while (++j < data->n_ph && !check_dead(data))
-	{
-		data->pid[j] = fork();
-		status = getpid();
-		if (check_stop(data, philo))
-		{
-			data->the_end = 1;
-			break ;
-		}
-		if (j % 2 != 0)
-			usleep(1000);
-		if (data->pid[j] < 0)
-			return (printf("Fork error(pid[%d])\n", j), 1);
-		if (data->pid[j] == 0)
-			process(data, philo, j);
-	}
+
 	j = -1;
 	while (++j < data->n_ph && !data->the_end)
 	{
@@ -55,6 +36,35 @@ static int	philosophers(t_data *data, t_philo *philo)
 		kill(status, SIGQUIT);
 		kill(status, SIGHUP);
 	}
+}
+
+static int	philosophers(t_data *data, t_philo *philo)
+{
+	int	j;
+	int	status;
+
+	j = -1;
+	gettimeofday(&data->start, NULL);
+	while (++j < data->n_ph && !check_dead(data))
+	{
+		data->pid[j] = fork();
+		status = getpid();
+		if (j % 2 != 0)
+			usleep(1000);
+		if (data->pid[j] < 0)
+			return (printf("Fork error(pid[%d])\n", j), 1);
+		if (data->pid[j] == 0)
+			process(data, philo, j);
+	}
+	while (1)
+	{
+		if (check_stop(data, philo))
+		{
+			data->the_end = 1;
+			break ;
+		}
+	}
+	wait_kill(data, status);
 	return (0);
 }
 
