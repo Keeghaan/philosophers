@@ -6,7 +6,7 @@
 /*   By: jcourtoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/05 13:54:51 by jcourtoi          #+#    #+#             */
-/*   Updated: 2022/08/10 12:57:21 by jcourtoi         ###   ########.fr       */
+/*   Updated: 2022/08/10 17:57:58 by jcourtoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@
 # include <limits.h>
 # include <wait.h>
 # include <errno.h>
+# include <signal.h>
 # define FORK "has taken a fork"
 # define EAT "is eating"
 # define THINK "is thinking"

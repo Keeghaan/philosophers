@@ -6,7 +6,7 @@
 /*   By: jcourtoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/05 13:58:55 by jcourtoi          #+#    #+#             */
-/*   Updated: 2022/08/10 13:13:12 by jcourtoi         ###   ########.fr       */
+/*   Updated: 2022/08/10 17:22:21 by jcourtoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,10 +58,10 @@ int	init_sem(t_data *data, t_philo *philo)
 	data->forks = sem_open(".forks", O_CREAT, 0644, data->n_ph);
 	if (data->forks == SEM_FAILED)
 		return (printf("sem_open forks error\n"), 2);
-	data->print = sem_open(".print", O_CREAT, 0644, data->n_ph);
+	data->print = sem_open(".print", O_CREAT, 0644, 1);
 	if (data->print == SEM_FAILED)
 		return (printf("sem_open print error\n"), close_s(data, 1), 3);
-	data->stop = sem_open(".stop", O_CREAT, 0644, data->n_ph);
+	data->stop = sem_open(".stop", O_CREAT, 0644, 1);
 	if (data->stop == SEM_FAILED)
 		return (printf("sem_open stop error\n"), close_s(data, 2), 4);
 	philo->eat = sem_open(".eat", O_CREAT, 0644, data->n_ph);

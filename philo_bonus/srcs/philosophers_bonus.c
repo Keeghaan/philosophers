@@ -6,7 +6,7 @@
 /*   By: jcourtoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/05 13:59:10 by jcourtoi          #+#    #+#             */
-/*   Updated: 2022/08/10 13:11:47 by jcourtoi         ###   ########.fr       */
+/*   Updated: 2022/08/10 18:09:02 by jcourtoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,25 +27,25 @@ static	int	philosopher(t_data *data, t_philo *philo)
 static int	philosophers(t_data *data, t_philo *philo)
 {
 	int	j;
-
+	int	status;
+//(void)philo;
 	j = -1;
+	gettimeofday(&data->start, NULL);
 	while (++j < data->n_ph && !check_dead(data))
 	{
-		gettimeofday(&data->start, NULL);
 		data->pid[j] = fork();
+		status = getpid();
+		if (j % 2 != 0)
+			usleep(1000);
 		if (data->pid[j] < 0)
 			return (printf("Fork error(pid[%d])\n", j), 1);
-		if (data->pid[j] == 0)
-			process(data, philo, j);
+		process(data, philo, j);
 	}
 	j = -1;
 	while (++j < data->n_ph && !data->the_end)
 	{
-		if (check_stop(data, philo))
-			data->the_end = 1;
-		else
-			waitpid(data->pid[j], NULL, 0);
-	}
+		waitpid(data->pid[j], NULL, 0);
+		}
 	return (0);
 }
 

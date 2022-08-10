@@ -6,7 +6,7 @@
 /*   By: jcourtoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/05 13:57:09 by jcourtoi          #+#    #+#             */
-/*   Updated: 2022/08/10 12:52:22 by jcourtoi         ###   ########.fr       */
+/*   Updated: 2022/08/10 18:09:29 by jcourtoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,26 +46,30 @@ void	*thread_func(void *arg)
 
 void	process(t_data *data, t_philo *philo, int j)
 {
-	while (!data->the_end)
+	int	status;
+	
+	status = getpid();
+	if (data->pid[j] == 0)
 	{
-		if (j % 2 == 0)
-			usleep(100);
 		if (pthread_create(&philo[j].th, NULL,
 				&thread_func, (void *)&philo[j]) != 0)
 		{
 			printf("Pthread create error (philo %d)\n", j);
-			exit(2);
+			exit(1);
 		}
-		while (1)
-		{
-			if (check_stop(data, philo))
-			{
-				data->the_end = 1;
-				break ;
-			}
-		}	
 		pthread_join(philo[j].th, NULL);
-		pthread_detach(philo[j].th);
+	}
+	while (1)
+	{
+		if (check_stop(data, philo))
+		{
+			data->the_end = 1;
+			break ;
+		}
+		kill(status, SIGINT);
+		kill(status, SIGQUIT);
+		kill(status, SIGHUP);
+
 	}
 }
 
