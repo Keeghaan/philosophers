@@ -6,7 +6,7 @@
 /*   By: jcourtoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/05 13:57:09 by jcourtoi          #+#    #+#             */
-/*   Updated: 2022/08/10 18:09:29 by jcourtoi         ###   ########.fr       */
+/*   Updated: 2022/08/10 18:27:22 by jcourtoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,10 +21,10 @@ void	eating(t_philo *philo)
 	sem_post(philo->eat);
 	usleep(philo->data->to_eat * 1000);
 	philo->ate++;
-	sem_wait(philo->eat);
+//	sem_wait(philo->eat);
 	if (philo->ate == philo->data->must_eat && !philo->finish)
 		philo->finish = 1;
-	sem_post(philo->eat);
+//	sem_post(philo->eat);
 	fork_func(philo, 0);
 }
 
@@ -46,31 +46,14 @@ void	*thread_func(void *arg)
 
 void	process(t_data *data, t_philo *philo, int j)
 {
-	int	status;
-	
-	status = getpid();
-	if (data->pid[j] == 0)
+	(void)data;
+	if (pthread_create(&philo[j].th, NULL,
+			&thread_func, (void *)&philo[j]) != 0)
 	{
-		if (pthread_create(&philo[j].th, NULL,
-				&thread_func, (void *)&philo[j]) != 0)
-		{
-			printf("Pthread create error (philo %d)\n", j);
-			exit(1);
-		}
-		pthread_join(philo[j].th, NULL);
+		printf("Pthread create error (philo %d)\n", j);
+		exit(1);
 	}
-	while (1)
-	{
-		if (check_stop(data, philo))
-		{
-			data->the_end = 1;
-			break ;
-		}
-		kill(status, SIGINT);
-		kill(status, SIGQUIT);
-		kill(status, SIGHUP);
-
-	}
+	pthread_join(philo[j].th, NULL);		
 }
 
 void	one_philo(t_data *data, t_philo *philo)

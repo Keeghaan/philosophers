@@ -6,7 +6,7 @@
 /*   By: jcourtoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/05 13:57:35 by jcourtoi          #+#    #+#             */
-/*   Updated: 2022/08/10 17:22:52 by jcourtoi         ###   ########.fr       */
+/*   Updated: 2022/08/10 18:34:13 by jcourtoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ void	dead_func(t_data *data, t_philo philo)
 	data->the_end = 1;
 	print_func(data, philo.n, DEAD);
 	sem_post(data->stop);
+	kill(getpid(), SIGINT);
 }
 
 int	check_dead(t_data *data)
@@ -37,14 +38,14 @@ int	check_stop(t_data *data, t_philo *philo)
 	stop = 1;
 	while (++j < data->n_ph)
 	{
-		sem_wait(philo->eat);
+		sem_wait(philo[j].eat);
 		if (!philo[j].finish)
 			stop = 0;
-		sem_post(philo->eat);
-		sem_wait(philo->eat);
+		sem_post(philo[j].eat);
+		sem_wait(philo[j].eat);
 		if (get_timestamp(data) - philo[j].last_meal >= data->to_die)
-			return (dead_func(data, philo[j]), sem_post(philo->eat), 1);
-		sem_post(philo->eat);
+			return (dead_func(data, philo[j]), sem_post(philo[j].eat), 1);
+		sem_post(philo[j].eat);
 	}
 	if (stop)
 		return (1);

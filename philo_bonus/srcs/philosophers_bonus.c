@@ -6,7 +6,7 @@
 /*   By: jcourtoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/05 13:59:10 by jcourtoi          #+#    #+#             */
-/*   Updated: 2022/08/10 18:09:02 by jcourtoi         ###   ########.fr       */
+/*   Updated: 2022/08/10 18:33:14 by jcourtoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,17 +35,26 @@ static int	philosophers(t_data *data, t_philo *philo)
 	{
 		data->pid[j] = fork();
 		status = getpid();
+		if (check_stop(data, philo))
+		{
+			data->the_end = 1;
+			break ;
+		}
 		if (j % 2 != 0)
 			usleep(1000);
 		if (data->pid[j] < 0)
 			return (printf("Fork error(pid[%d])\n", j), 1);
-		process(data, philo, j);
+		if (data->pid[j] == 0)
+			process(data, philo, j);
 	}
 	j = -1;
 	while (++j < data->n_ph && !data->the_end)
 	{
 		waitpid(data->pid[j], NULL, 0);
-		}
+		kill(status, SIGINT);
+		kill(status, SIGQUIT);
+		kill(status, SIGHUP);
+	}
 	return (0);
 }
 
