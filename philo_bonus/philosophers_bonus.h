@@ -6,7 +6,7 @@
 /*   By: jcourtoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/05 13:54:51 by jcourtoi          #+#    #+#             */
-/*   Updated: 2022/08/10 17:57:58 by jcourtoi         ###   ########.fr       */
+/*   Updated: 2022/08/11 14:38:20 by jcourtoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,7 @@ int		get_timestamp(t_data *data);
 int		check_stop(t_data *data, t_philo *philo);
 int		check_dead(t_data *data);
 int		init_sem(t_data *data, t_philo *philo);
+void	free_and_kill(t_data *data, t_philo *philo, int last);
 void	exit_philo(t_data *data, t_philo *philo);
 void	close_s(t_data *data, int file);
 void	fork_func(t_philo *philo, int take);

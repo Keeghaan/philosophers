@@ -6,7 +6,7 @@
 /*   By: jcourtoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/05 13:57:35 by jcourtoi          #+#    #+#             */
-/*   Updated: 2022/08/10 18:34:13 by jcourtoi         ###   ########.fr       */
+/*   Updated: 2022/08/11 13:02:55 by jcourtoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@ void	dead_func(t_data *data, t_philo philo)
 	data->the_end = 1;
 	print_func(data, philo.n, DEAD);
 	sem_post(data->stop);
-	kill(getpid(), SIGINT);
 }
 
 int	check_dead(t_data *data)
