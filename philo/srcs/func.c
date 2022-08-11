@@ -6,7 +6,7 @@
 /*   By: jcourtoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/04 14:28:39 by jcourtoi          #+#    #+#             */
-/*   Updated: 2022/08/10 16:30:19 by jcourtoi         ###   ########.fr       */
+/*   Updated: 2022/08/11 12:44:30 by jcourtoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,8 @@ void	usleep_func(t_data *data, int how_long)
 	int	time;
 
 	time = get_timestamp(data) * 1000;
-	while ((get_timestamp(data) * 1000) - time < how_long * 1000)
+	while (!check_dead(data) && (get_timestamp(data) * 1000)
+		- time < how_long * 1000)
 		usleep(10);
 }
 
