@@ -6,17 +6,17 @@
 /*   By: jcourtoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/05 13:57:35 by jcourtoi          #+#    #+#             */
-/*   Updated: 2022/08/11 13:02:55 by jcourtoi         ###   ########.fr       */
+/*   Updated: 2022/08/12 11:00:41 by jcourtoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../philosophers_bonus.h"
 
-void	dead_func(t_data *data, t_philo philo)
+void	dead_func(t_data *data, t_philo *philo)
 {
 	sem_wait(data->stop);
 	data->the_end = 1;
-	print_func(data, philo.n, DEAD);
+	print_func(data, philo->n, DEAD);
 	sem_post(data->stop);
 }
 
@@ -43,7 +43,7 @@ int	check_stop(t_data *data, t_philo *philo)
 		sem_post(philo[j].eat);
 		sem_wait(philo[j].eat);
 		if (get_timestamp(data) - philo[j].last_meal >= data->to_die)
-			return (dead_func(data, philo[j]), sem_post(philo[j].eat), 1);
+			return (dead_func(data, &philo[j]), sem_post(philo[j].eat), 1);
 		sem_post(philo[j].eat);
 	}
 	if (stop)

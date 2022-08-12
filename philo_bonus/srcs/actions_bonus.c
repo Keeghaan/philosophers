@@ -6,7 +6,7 @@
 /*   By: jcourtoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/05 13:57:09 by jcourtoi          #+#    #+#             */
-/*   Updated: 2022/08/11 14:54:42 by jcourtoi         ###   ########.fr       */
+/*   Updated: 2022/08/12 10:57:35 by jcourtoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,18 +48,22 @@ void	process(t_data *data, t_philo *philo, int j)
 {
 	if (check_dead(data))
 	{
-		exit_philo(data, philo);
+		free(data->pid);
+		free(philo);
 		exit(1);
 	}
 	if (pthread_create(&philo[j].th, NULL,
 			&thread_func, (void *)&philo[j]) != 0)
 	{
 		printf("Pthread create error (philo %d)\n", j);
+		free(data->pid);
+		free(philo);
 		exit(1);
 	}
+	free(data->pid);
 	pthread_join(philo[j].th, NULL);
 	pthread_detach(philo[j].th);
-	exit_philo(data, philo);
+	free(philo);
 }
 
 void	one_philo(t_data *data, t_philo *philo)

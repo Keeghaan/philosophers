@@ -6,7 +6,7 @@
 /*   By: jcourtoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/05 13:59:10 by jcourtoi          #+#    #+#             */
-/*   Updated: 2022/08/11 14:57:01 by jcourtoi         ###   ########.fr       */
+/*   Updated: 2022/08/12 11:03:39 by jcourtoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,13 +24,16 @@ static	int	philosopher(t_data *data, t_philo *philo)
 	return (0);
 }
 
-static void	wait_pid(t_data *data)
+static void	check_kill(t_data *data, t_philo *philo, int j)
 {
-	int	j;
-
-	j = -1;
-	while (++j < data->n_ph && !data->the_end)
-		waitpid(data->pid[j], NULL, 0);
+	while (1)
+	{
+		if (check_stop(data, philo))
+		{	
+			data->the_end = 1;
+			kill(data->pid[j], SIGINT);
+		}
+	}
 }
 
 static int	philosophers(t_data *data, t_philo *philo)
@@ -52,27 +55,22 @@ static int	philosophers(t_data *data, t_philo *philo)
 				process(data, philo, j);
 		}
 	}
-	while (1)
-	{
-		if (check_stop(data, philo))
-		{
-			data->the_end = 1;
-			kill(data->pid[j], SIGINT);
-		}
-	}
-	wait_pid(data);
+	check_kill(data, philo, j);
+	j = -1;
+	while (++j < data->n_ph && !data->the_end)
+		waitpid(data->pid[j], NULL, 0);
 	return (0);
 }
 
 void	exit_philo(t_data *data, t_philo *philo)
 {
-//	int	j;
+	int	j;
 
-//	j = -1;
+	j = -1;
 	close_s(data, 3);
 	sem_unlink(".eat");
-//	while (++j < data->n_ph)
-		sem_close(philo->eat);
+	while (++j < data->n_ph)
+		sem_close(philo[j].eat);
 	free(data->pid);
 	free(philo);
 }
